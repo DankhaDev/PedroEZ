@@ -30,25 +30,25 @@ Wing Toggle - L1
 
 *V5 Smart Ports*
 
-Intake - 1
+    Intake - 1
 
-Left Drivetrain - 11, 12, 13
+    Left Drivetrain - 11, 12, 13
 
-Right Drivetrain - 14, 15, 16
+    Right Drivetrain - 14, 15, 16
 
-Kicker Motor - 17
+    Kicker Motor - 17
 
-Kicker Optical Sensor - 18
+    Kicker Optical Sensor - 18
 
-Kicker Rotation Sensor - 19
+    Kicker Rotation Sensor - 19
 
-IMU - 20
+    IMU - 20
 
 
 *3-Wire Ports*
 
-Auton Selector Buttons - A, B
+    Auton Selector Buttons - A, B
 
-Left Wing - C, D
+    Left Wing - C, D
 
-Right Wing - E, F
+    Right Wing - E, F

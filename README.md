@@ -28,7 +28,7 @@ Wing Toggle - L1
 
 ## Wires!
 
-*V5 Smart Ports
+*V5 Smart Ports*
 
 Intake - 1
 
@@ -45,7 +45,7 @@ Kicker Rotation Sensor - 19
 IMU - 20
 
 
-*3-Wire Ports
+*3-Wire Ports*
 
 Auton Selector Buttons - A, B
 

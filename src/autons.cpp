@@ -248,3 +248,19 @@ void interfered_example() {
 // . . .
 // Make your own autonomous functions here!
 // . . .
+
+void leftAuton() {
+
+}
+
+void rightAuton() {
+  
+}
+
+void skillsAuton() {
+
+}
+
+void soloAWP() {
+  
+}

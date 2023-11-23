@@ -18,7 +18,7 @@ Drive chassis (
   ,{14, 15, 16}
 
   // IMU Port
-  ,21
+  ,20
 
   // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
   //    (or tracking wheel diameter)
@@ -50,6 +50,24 @@ Drive chassis (
   // ,1
 );
 
+//Auton Selectors
+pros::ADIDigitalIn increase('A');
+pros::ADIDigitalIn decrease('B');
+
+//Kicker
+pros::Motor kicker(17);
+pros::Optical kickerOptical(18);
+pros::Rotation kickerRotation(19);
+
+//Intake
+pros::Motor intake(1);
+
+
+//Wings
+pros::ADIPort leftWing1('C', pros::E_ADI_DIGITAL_OUT);
+pros::ADIPort leftWing2('D', pros::E_ADI_DIGITAL_OUT);
+pros::ADIPort rightWing1('E', pros::E_ADI_DIGITAL_OUT);
+pros::ADIPort rightWing2('F', pros::E_ADI_DIGITAL_OUT);
 
 
 /**
@@ -89,6 +107,8 @@ void initialize() {
   // Initialize chassis and auton selector
   chassis.initialize();
   ez::as::initialize();
+  //Change the auton selector to use buttons for forward and back instead of the screen
+  ez::as::limit_switch_lcd_initialize(&increase, &decrease);
 }
 
 
@@ -140,7 +160,6 @@ void autonomous() {
 }
 
 
-
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -154,21 +173,74 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+
+// State of the wing's toggle
+bool pneumaticsExtended = false;
+
 void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
-  while (true) {
+  double kickerkP = 0.1; // This is your proportional constant, you may need to adjust this value
+  double kickerError = 0; // This is the difference between the target position and the current position
+  double kickerTarget = 90; // This is the target position in degrees
 
-    chassis.tank(); // Tank control
-    // chassis.arcade_standard(ez::SPLIT); // Standard split arcade
+  while (true) {
+    // chassis.tank(); // Tank control
+    chassis.arcade_standard(ez::SPLIT); // Standard split arcade
     // chassis.arcade_standard(ez::SINGLE); // Standard single arcade
     // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
     // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
 
-    // . . .
-    // Put more user control code here!
-    // . . .
+    double kickerCurrent = kickerRotation.get_position();
+    kickerError = kickerTarget - kickerCurrent;
+
+    if (abs(kickerError) < 1) { // If the error is less than 1, we can assume we're at the target.
+      kicker.move_velocity(0); // Stop the motor
+    } else {
+      kicker.move_velocity(-abs(kickerkP * kickerError)); // Adjust the motor speed according to the error, always in reverse
+    }
+
+    // Check if the optical sensor detects the green triball
+    if (kickerOptical.get_hue() >= 120 && kickerOptical.get_hue() <= 140) { // Adjust these values based on the hue of the green triball
+      pros::delay(250); // Wait 0.25 seconds before fireing the kicker
+      kicker.move_velocity(-100); // Spin the kicker in reverse at full speed
+      pros::delay(150); // Wait for 0.15 seconds
+      kicker.move_velocity(0); // Stop the kicker
+    }
+
+    // Fire the kicker when L2 is pressed
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+    kicker.move_velocity(-100); // Spin the kicker in reverse at full speed
+    pros::delay(150); // Wait for 0.15 seconds
+    kicker.move_velocity(0); // Stop the kicker
+    }
+
+    // Intake spins inward when R2 is held
+    // Intake spins outward when R1 is held
+    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+      intake.move_velocity(100); // Spin the intake forward at full speed
+    } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+      intake.move_velocity(-100); // Spin the intake in reverse at full speed
+    } else {
+      intake.move_velocity(0); // Stop the intake
+    }
+
+    // Wing Toggle
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
+      pneumaticsExtended = !pneumaticsExtended;
+        if (pneumaticsExtended) {
+        leftWing1.set_value(true);
+        leftWing2.set_value(false);
+        rightWing1.set_value(true);
+        rightWing2.set_value(false);
+        } else {
+        leftWing1.set_value(false);
+        leftWing2.set_value(true);
+        rightWing1.set_value(false);
+        rightWing2.set_value(true);
+        }
+    }
 
     pros::delay(ez::util::DELAY_TIME); // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

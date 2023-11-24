@@ -83,6 +83,8 @@ void intakeIn(void);
 void intakeOut(void);
 void intakeStop(void);
 void kickerHit(void);
+void kickerOn(void);
+void kickerOff(void);
 #ifdef __cplusplus
 }
 #endif

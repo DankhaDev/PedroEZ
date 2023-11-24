@@ -218,6 +218,14 @@ void kickerHit() {
   kicker.move_velocity(0); // Stop the kicker
 }
 
+void kickerOn() {
+  kicker.move_velocity(-100); //spin motor in reverse
+}
+
+void kickerOff() {
+  kicker.move_velocity(0); //stop the kicker
+}
+
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via

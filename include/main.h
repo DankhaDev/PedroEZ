@@ -73,6 +73,16 @@ void initialize(void);
 void disabled(void);
 void competition_initialize(void);
 void opcontrol(void);
+void openWings(void);
+void openLeftWing(void);
+void openRightWing(void);
+void closeWings(void);
+void closeLeftWing(void);
+void closeRightWing(void);
+void intakeIn(void);
+void intakeOut(void);
+void intakeStop(void);
+void kickerHit(void);
 #ifdef __cplusplus
 }
 #endif

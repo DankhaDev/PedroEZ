@@ -95,6 +95,8 @@ void initialize() {
 
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
+    //Default Autons, good for PID tuning
+    /*
     Auton("Example Drive\n\nDrive forward and come back.", drive_example),
     Auton("Example Turn\n\nTurn 3 times.", turn_example),
     Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
@@ -102,6 +104,13 @@ void initialize() {
     Auton("Swing Example\n\nSwing, drive, swing.", swing_example),
     Auton("Combine all 3 movements", combining_movements),
     Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
+    */
+    
+    //Competition Autons
+    Auton("Left Auton\n\nScore alliance triball\nHit matchload zone triball out of the corner\nPush 2 green triballs\nTouch elevation bar from the outside with wings\nHalf AWP", leftAuton),
+    Auton("Right Auton\n\nScore 2 green triballs\nScore alliance triball\nGrab and score 3rd green triball\nTouch elecation bar from the outside\nHalf AWP", rightAuton),
+    Auton("Skills Auton\n\n Auton for skills, shocker", skillsAuton),
+    Auton("Solo AWP Auton\n\nScore alliance triball\nHit matchload zone triball out of the corner\nTouch elevation bar from inside\nFull Solo AWP", soloAWP),
   });
 
   // Initialize chassis and auton selector
@@ -159,6 +168,55 @@ void autonomous() {
   ez::as::auton_selector.call_selected_auton(); // Calls selected auton from autonomous selector.
 }
 
+//opens both wings
+void openWings() { 
+  leftWing1.set_value(true);
+  leftWing2.set_value(false);
+  rightWing1.set_value(true);
+  rightWing2.set_value(false);
+}
+void openLeftWing() { //Open only the left wing
+  leftWing1.set_value(true);
+  leftWing1.set_value(false);
+}
+void openRightWing() { //Open only the right wing
+  rightWing1.set_value(true);
+  rightWing2.set_value(false);
+}
+
+//closes both wings
+void closeWings() { 
+  leftWing1.set_value(false);
+  leftWing2.set_value(true);
+  rightWing1.set_value(false);
+  rightWing2.set_value(true);
+}
+void closeLeftWing() { //Close only the left wing
+  leftWing1.set_value(false);
+  leftWing2.set_value(true);
+}
+void closeRightWing() { //Close only the right wing
+  rightWing1.set_value(false);
+  rightWing2.set_value(true);
+}
+
+void intakeIn() {
+  intake.move_velocity(100); // Spin the intake inward at full speed
+}
+
+void intakeOut() {
+  intake.move_velocity(-100); // Spin the intake outward at full speed
+}
+
+void intakeStop() {
+  intake.move_velocity(0); // Stop the intake
+}
+
+void kickerHit() {
+  kicker.move_velocity(-100); // Spin the kicker in reverse at full speed
+  pros::delay(150); // Wait for 0.15 seconds
+  kicker.move_velocity(0); // Stop the kicker
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -219,26 +277,20 @@ void opcontrol() {
     // Intake spins inward when R2 is held
     // Intake spins outward when R1 is held
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-      intake.move_velocity(100); // Spin the intake forward at full speed
+      intakeIn(); // Spin the intake forward at full speed
     } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-      intake.move_velocity(-100); // Spin the intake in reverse at full speed
+      intakeOut(); // Spin the intake in reverse at full speed
     } else {
-      intake.move_velocity(0); // Stop the intake
+      intakeStop(); // Stop the intake
     }
 
     // Wing Toggle
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
       pneumaticsExtended = !pneumaticsExtended;
         if (pneumaticsExtended) {
-        leftWing1.set_value(true);
-        leftWing2.set_value(false);
-        rightWing1.set_value(true);
-        rightWing2.set_value(false);
+        openWings();
         } else {
-        leftWing1.set_value(false);
-        leftWing2.set_value(true);
-        rightWing1.set_value(false);
-        rightWing2.set_value(true);
+        closeWings();
         }
     }
 

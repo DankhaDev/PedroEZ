@@ -64,11 +64,8 @@ pros::Motor intake(1);
 
 
 //Wings
-pros::ADIPort leftWing1('C', pros::E_ADI_DIGITAL_OUT);
-pros::ADIPort leftWing2('D', pros::E_ADI_DIGITAL_OUT);
-pros::ADIPort rightWing1('E', pros::E_ADI_DIGITAL_OUT);
-pros::ADIPort rightWing2('F', pros::E_ADI_DIGITAL_OUT);
-
+pros::ADIPort leftWing('C', pros::E_ADI_DIGITAL_OUT);
+pros::ADIPort rightWing('D', pros::E_ADI_DIGITAL_OUT);
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -172,34 +169,26 @@ void autonomous() {
 
 //opens both wings
 void openWings() { 
-  leftWing1.set_value(true);
-  leftWing2.set_value(false);
-  rightWing1.set_value(true);
-  rightWing2.set_value(false);
+  leftWing.set_value(true);
+  rightWing.set_value(true);
 }
 void openLeftWing() { //Open only the left wing
-  leftWing1.set_value(true);
-  leftWing1.set_value(false);
+  leftWing.set_value(true);
 }
 void openRightWing() { //Open only the right wing
-  rightWing1.set_value(true);
-  rightWing2.set_value(false);
+  rightWing.set_value(true);
 }
 
 //closes both wings
 void closeWings() { 
-  leftWing1.set_value(false);
-  leftWing2.set_value(true);
-  rightWing1.set_value(false);
-  rightWing2.set_value(true);
+  leftWing.set_value(false);
+  rightWing.set_value(false);
 }
 void closeLeftWing() { //Close only the left wing
-  leftWing1.set_value(false);
-  leftWing2.set_value(true);
+  leftWing.set_value(false);
 }
 void closeRightWing() { //Close only the right wing
-  rightWing1.set_value(false);
-  rightWing2.set_value(true);
+  rightWing.set_value(false);
 }
 
 void intakeIn() {

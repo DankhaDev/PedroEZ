@@ -11,11 +11,11 @@
 Drive chassis (
   // Left Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  {11, 12, 13}
+  {-14, -15, 16}
 
   // Right Chassis Ports (negative port will reverse it!)
   //   the first port is the sensored port (when trackers are not used!)
-  ,{14, 15, 16}
+  ,{11, 12, -13}
 
   // IMU Port
   ,20
@@ -32,7 +32,7 @@ Drive chassis (
   //    (or gear ratio of tracking wheel)
   // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
   // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
-  ,0.6
+  ,1.67
 
   // Uncomment if using tracking wheels
   /*
@@ -96,28 +96,30 @@ void initialize() {
   // Autonomous Selector using LLEMU
   ez::as::auton_selector.add_autons({
     //Default Autons, good for PID tuning
-    /*
-    Auton("Example Drive\n\nDrive forward and come back.", drive_example),
+    
+    // Auton("Example Drive\n\nDrive forward and come back.", drive_example),
     Auton("Example Turn\n\nTurn 3 times.", turn_example),
     Auton("Drive and Turn\n\nDrive forward, turn, come back. ", drive_and_turn),
     Auton("Drive and Turn\n\nSlow down during drive.", wait_until_change_speed),
     Auton("Swing Example\n\nSwing, drive, swing.", swing_example),
     Auton("Combine all 3 movements", combining_movements),
     Auton("Interference\n\nAfter driving forward, robot performs differently if interfered or not.", interfered_example),
-    */
     
+    
+    /*
     //Competition Autons
     Auton("Left Auton\n\nScore alliance triball\nHit matchload zone triball out of the corner\nPush 2 green triballs\nTouch elevation bar from the outside with wings\nHalf AWP", leftAuton),
     Auton("Right Auton\n\nScore 2 green triballs\nScore alliance triball\nGrab and score 3rd green triball\nTouch elecation bar from the outside\nHalf AWP", rightAuton),
     Auton("Skills Auton\n\n Auton for skills, shocker", skillsAuton),
     Auton("Solo AWP Auton\n\nScore alliance triball\nHit matchload zone triball out of the corner\nTouch elevation bar from inside\nFull Solo AWP", soloAWP),
+    */  
   });
 
   // Initialize chassis and auton selector
   chassis.initialize();
   ez::as::initialize();
   //Change the auton selector to use buttons for forward and back instead of the screen
-  ez::as::limit_switch_lcd_initialize(&increase, &decrease);
+  // ez::as::limit_switch_lcd_initialize(&increase, &decrease);
 }
 
 
@@ -201,11 +203,11 @@ void closeRightWing() { //Close only the right wing
 }
 
 void intakeIn() {
-  intake.move_velocity(100); // Spin the intake inward at full speed
+  intake.move_velocity(600); // Spin the intake inward at full speed
 }
 
 void intakeOut() {
-  intake.move_velocity(-100); // Spin the intake outward at full speed
+  intake.move_velocity(-600); // Spin the intake outward at full speed
 }
 
 void intakeStop() {
@@ -214,7 +216,7 @@ void intakeStop() {
 
 void kickerHit() {
   kicker.move_velocity(-100); // Spin the kicker in reverse at full speed
-  pros::delay(150); // Wait for 0.15 seconds
+  pros::delay(1000); // Wait for 1 second
   kicker.move_velocity(0); // Stop the kicker
 }
 
@@ -247,9 +249,9 @@ void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
-  double kickerkP = 0.1; // This is your proportional constant, you may need to adjust this value
-  double kickerError = 0; // This is the difference between the target position and the current position
-  double kickerTarget = 90; // This is the target position in degrees
+double kickerTarget = 420; // This is the target position in degrees
+double kickerErrorThreshold = 5; // Set this to the acceptable error range
+double kickerError = 0;
 
   while (true) {
     // chassis.tank(); // Tank control
@@ -257,30 +259,38 @@ void opcontrol() {
     // chassis.arcade_standard(ez::SINGLE); // Standard single arcade
     // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
     // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
+    
+    double kickerCurrent = kickerRotation.get_position() / 100;
+    double kickerError = kickerTarget - kickerCurrent;
+    
+    // Print the current position and error to the LCD screen
+    pros::lcd::print(1, "Error: %.2f", kickerError);
+    pros::lcd::print(2, "Target: %.2f", kickerTarget);
 
-    double kickerCurrent = kickerRotation.get_position();
-    kickerError = kickerTarget - kickerCurrent;
 
-    if (abs(kickerError) < 1) { // If the error is less than 1, we can assume we're at the target.
-      kicker.move_velocity(0); // Stop the motor
+// Bang-bang control loop
+if (!master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+    // Get the hue from the optical sensor
+    int hue = kickerOptical.get_hue();
+
+    // Check if the hue is within the specified range
+    if (hue >= 112 && hue <= 117) {
+        kickerOn(); // Fire the kicker
+    } else if (kickerError > kickerErrorThreshold) { // If the current position is less than the target
+        kickerOn(); // Move the kicker in reverse at full speed
+    } else if (kickerError < -kickerErrorThreshold) { // If the current position is greater than the target
+        kickerOn(); // Move the kicker reverse at full speed
     } else {
-      kicker.move_velocity(-abs(kickerkP * kickerError)); // Adjust the motor speed according to the error, always in reverse
+        kickerOff(); // Stop the kicker
     }
+}
 
-    // Check if the optical sensor detects the green triball
-    if (kickerOptical.get_hue() >= 120 && kickerOptical.get_hue() <= 140) { // Adjust these values based on the hue of the green triball
-      pros::delay(250); // Wait 0.25 seconds before fireing the kicker
-      kicker.move_velocity(-100); // Spin the kicker in reverse at full speed
-      pros::delay(150); // Wait for 0.15 seconds
-      kicker.move_velocity(0); // Stop the kicker
-    }
+// Fire the kicker when L2 is being held
+if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+    kickerOn();
+  } 
 
-    // Fire the kicker when L2 is pressed
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-    kicker.move_velocity(-100); // Spin the kicker in reverse at full speed
-    pros::delay(150); // Wait for 0.15 seconds
-    kicker.move_velocity(0); // Stop the kicker
-    }
+
 
     // Intake spins inward when R2 is held
     // Intake spins outward when R1 is held

@@ -250,55 +250,85 @@ void interfered_example() {
 // . . .
 
 void leftAuton() {
-  chassis.set_turn_pid(45, TURN_SPEED); //turn to face 45 degrees with PID
+  //turn to face 2 degrees with PID
+  chassis.set_turn_pid(2, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-36, DRIVE_SPEED, true); //drive backwards 3 feet with PID
+  //drive forward 54 inches with PID
+  chassis.set_drive_pid(54, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(0, TURN_SPEED); //turn to face 0 degrees with PID
+  //turn to face 270 degrees with PID
+  chassis.set_turn_pid(270, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(24, DRIVE_SPEED, true); //drive forward 2 feet with PID
+  //intakeOut()
+  intakeOut();
+
+  //drive forward 6 inches with PID
+  chassis.set_drive_pid(6, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(45, TURN_SPEED); //turn to face 45 degrees with PID
+  //drive reverse 6 inches with PID
+  chassis.set_drive_pid(-6, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(18, DRIVE_SPEED, true); //drive 1.5 feet forward with PID
+  //intakeStop()
+  intakeStop();
+
+  //turn to face 90 degrees with PID
+  chassis.set_turn_pid(90, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(320, TURN_SPEED); //turn to face 320 degrees with PID
+  //openLeftWing()
+  openLeftWing();
+
+  //drive forward 34 inches with PID
+  chassis.set_drive_pid(34, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-36, DRIVE_SPEED, true); //drive backwards 3 feet with PID
+  //drive reverse 4 inches with PID
+  chassis.set_drive_pid(-4, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(0, TURN_SPEED); //turn to face 0 degrees with PID
+  //closeLeftWing()
+  closeLeftWing();
+
+  //turn to face 230 degrees with PID
+  chassis.set_turn_pid(230, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(24, DRIVE_SPEED, true); //drive forward 2 feet with PID
+  //drive 67 inches forward with PID
+  chassis.set_drive_pid(67, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(90, TURN_SPEED); //turn to face 90 degrees with PID
+  //turn to face 130 degrees with PID
+  chassis.set_turn_pid(130, TURN_SPEED);
   chassis.wait_drive();
 
-  openWings(); //open wings
+  //openRightWing()
+  openRightWing();
 
-  chassis.set_drive_pid(24, DRIVE_SPEED, true); //drive forward 2 feet with PID
+  //drive forward 17 inches with PID
+  chassis.set_drive_pid(17, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  closeWings(); //close wings
+  //intakeOut()
+  intakeOut();
 
-  chassis.set_turn_pid(180, TURN_SPEED); //turn to face 180 degrees
+  //turn to face 80 degrees with PID
+  chassis.set_turn_pid(80, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-30, DRIVE_SPEED, true); //drive in reverse for 2.5 feet
+  //openWings()
+  openWings();
+
+  //drive forward 38 inches with PID
+  chassis.set_drive_pid(38, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  openWings(); //open wings
-
-  chassis.set_drive_pid(-12, DRIVE_SPEED, true); //drive in reserse for 1 foot;
+  //turn to face 100 degrees with PID
+  chassis.set_turn_pid(100, TURN_SPEED);
   chassis.wait_drive();
 }
 
@@ -373,6 +403,7 @@ void rightAuton() {
 }
 
 void skillsAuton() {
+
   //open wings
   openWings();
 
@@ -531,6 +562,7 @@ void skillsAuton() {
   chassis.set_drive_pid(-3, DRIVE_SPEED, true);
   chassis.wait_drive();
 }
+
 void soloAWP() {
   //drive reverse 3 feet at 50% speed using PID
   chassis.set_drive_pid(-36, DRIVE_SPEED * 0.5, true);

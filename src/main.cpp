@@ -251,11 +251,6 @@ double kickerError = 0;
     
     double kickerCurrent = kickerRotation.get_position() / 100;
     double kickerError = kickerTarget - kickerCurrent;
-    
-    // Print the current position and error to the LCD screen
-    pros::lcd::print(1, "Error: %.2f", kickerError);
-    pros::lcd::print(2, "Target: %.2f", kickerTarget);
-
 
 // Bang-bang control loop
 if (!master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {

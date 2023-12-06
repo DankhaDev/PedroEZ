@@ -266,11 +266,11 @@ void leftAuton() {
   intakeOut();
 
   //drive forward 6 inches with PID
-  chassis.set_drive_pid(6, DRIVE_SPEED, true);
+  chassis.set_drive_pid(6, DRIVE_SPEED);
   chassis.wait_drive();
 
   //drive reverse 6 inches with PID
-  chassis.set_drive_pid(-6, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-6, DRIVE_SPEED);
   chassis.wait_drive();
 
   //intakeStop()
@@ -288,7 +288,7 @@ void leftAuton() {
   chassis.wait_drive();
 
   //drive reverse 4 inches with PID
-  chassis.set_drive_pid(-4, DRIVE_SPEED, true);
+  chassis.set_drive_pid(-4, DRIVE_SPEED);
   chassis.wait_drive();
 
   //closeLeftWing()
@@ -333,72 +333,107 @@ void leftAuton() {
 }
 
 void rightAuton() {
-  chassis.set_drive_pid(48, DRIVE_SPEED, true); //drive forward 4 feet with PID
+  //drive forward 47 inches with PID
+  chassis.set_drive_pid(47, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(90, TURN_SPEED); //turn to face 90 degrees with PID
+  //turn to face 90 degrees with PID
+  chassis.set_turn_pid(90, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(6, DRIVE_SPEED, true); //drive forward 0.5 feet with PID
+  //intakeOut()
+  intakeOut();
+
+  //drive forward 6 inches with PID
+  chassis.set_drive_pid(6, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-6, DRIVE_SPEED, true); //drive reverse 0.5 feet with PID
+  //drive reverse 6 inches with PID
+  chassis.set_drive_pid(-6, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(30, TURN_SPEED); //turn to face 30 degrees with PID
+  //intakeOff()
+  intakeStop();
+
+  //turn to face 285 degrees with PID
+  chassis.set_turn_pid(285, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-36, DRIVE_SPEED, true); //drive in reverse 3 feet with PID
+  //drive forward 28 inches with PID
+  chassis.set_drive_pid(28, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  openWings(); //open wings
+  //openLeftWing()
+  openLeftWing();
 
-  chassis.set_swing_pid(ez::RIGHT_SWING, 180, SWING_SPEED); //swing to the right 180 degrees using PID
+  //left swing to 100 degrees with PID
+  chassis.set_swing_pid(ez::LEFT_SWING, 100, SWING_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-42, DRIVE_SPEED, true); //drive 3.5 feet in reverse with PID
+  //intakeOut()
+  intakeOut();
+
+  //drive forward 33 inches with PID
+  chassis.set_drive_pid(33, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(6, DRIVE_SPEED, true); //drive .5 feet forward with PID
+  //reverse 6 inches with PID
+  chassis.set_drive_pid(-6, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(300, TURN_SPEED); //turn to face 300 degrees with PID
+  //closeLeftWing()
+  closeLeftWing();
+
+  //intakeStop()
+  intakeStop();
+
+  //turn to face 245 degrees with PID
+  chassis.set_turn_pid(245, TURN_SPEED);
   chassis.wait_drive();
 
-  intakeIn(); //intake in
+  //intakeIn()
+  intakeIn();
 
-  chassis.set_drive_pid(36, DRIVE_SPEED, true); //drive forward 3 feet with PID
+  //drive forward 33 inches with PID
+  chassis.set_drive_pid(33, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  intakeOut(); //intake out
-
-  chassis.set_drive_pid(-6, DRIVE_SPEED, true); //drive reverse .5 feet with PID
+  //turn to face 65 degrees with PID
+  chassis.set_turn_pid(65, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(105, TURN_SPEED); //turn to face 105 degrees with PID
+  //drive forward 33 inches with PID
+  chassis.set_drive_pid(33, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(36, DRIVE_SPEED, true); //drive forward 3 feet
+  //turn to face 90 degrees with PID
+  chassis.set_turn_pid(90, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(90, TURN_SPEED); //turn to face 90 degrees with PID
+  //intakeOut()
+  intakeOut();
+
+  //drive forward 6 inches with PID
+  chassis.set_drive_pid(6, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(3, DRIVE_SPEED, true); //drive forward 3 inches using PID
+  //drive reverse 6 inches with PID
+  chassis.set_drive_pid(-6, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  chassis.set_turn_pid(130, TURN_SPEED); //turn to face 130 degrees with PID
+  //intakeStop()
+  intakeStop();
+
+  //turn to face 220 degrees with PID
+  chassis.set_turn_pid(220, TURN_SPEED);
   chassis.wait_drive();
 
-  chassis.set_drive_pid(-60, DRIVE_SPEED, true); //drive reverse 5 feet with PID
+  //drive forward 48 inches with PID
+  chassis.set_drive_pid(48, DRIVE_SPEED, true);
   chassis.wait_drive();
 
-  openWings(); //open wings
-
-  chassis.set_turn_pid(180, TURN_SPEED); //turn to face 180 degrees with PID
-  chassis.wait_drive();
-
-  chassis.set_drive_pid(-6, DRIVE_SPEED, true); //drive reverse .5 feet with PID
+  //turn to face 160 degrees with PID
+  chassis.set_turn_pid(160, TURN_SPEED);
   chassis.wait_drive();
 }
 
